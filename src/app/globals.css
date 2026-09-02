@@ -1,0 +1,1379 @@
+/* ============================================================
+   UaiOu — 7Days Design System aplicado.
+   ============================================================
+
+   Os tokens abaixo são os de `7days-ds/tokens.css`, copiados com os MESMOS NOMES
+   (--background, --foreground, --primary, --muted-foreground, --border, --radius,
+   --status-*, --sidebar-*). O DS é escrito para Tailwind/shadcn e este app é CSS puro;
+   como o pedido foi ignorar a divergência de stack, a tradução acontece aqui: as classes
+   deste produto (.card, .btn, .badge, table.data…) passam a ser expressas nos tokens do DS,
+   em vez de nas cores próprias que existiam antes. Quem um dia trocar para Tailwind encontra
+   o contrato de cor intacto — `bg-primary` e `text-muted-foreground` já apontam para as
+   variáveis certas.
+
+   Contrato preservado do DS: OKLCH valor-completo (sem canais soltos), opacidade via
+   color-mix(in oklch, …), --radius de 8px (não pílula), tema por [data-theme] e dark por .dark.
+
+   O que mudou em relação ao DS: o tenant default é `terra` — o laranja da marca UaiOu — em vez
+   do verde floresta. É exatamente o mecanismo multi-tenant que o DS prevê; nenhum token novo
+   foi inventado para isso.
+   ============================================================ */
+
+:root {
+  /* --- Neutros base — light --- */
+  --background: oklch(100% 0 89.9);
+  --foreground: oklch(18.6% 0.008 285.6);
+
+  --card: oklch(100% 0 89.9);
+  --card-foreground: oklch(18.6% 0.008 285.6);
+
+  --popover: oklch(100% 0 89.9);
+  --popover-foreground: oklch(18.6% 0.008 285.6);
+
+  --secondary: oklch(96.8% 0.001 286.4);
+  --secondary-foreground: oklch(21% 0.006 285.9);
+
+  --muted: oklch(96.8% 0.001 286.4);
+  --muted-foreground: oklch(53.4% 0.013 285.9);
+
+  --accent: oklch(96.8% 0.001 286.4);
+  --accent-foreground: oklch(21% 0.006 285.9);
+
+  --destructive: oklch(55.7% 0.209 27.5);
+  --destructive-foreground: oklch(98.5% 0 89.9);
+
+  --border: oklch(92% 0.004 286.3);
+  --input: oklch(90.3% 0.005 286.3);
+
+  --radius: 0.5rem;
+
+  /* --- Status semânticos (StatusBadge) --- */
+  --status-active: oklch(57.1% 0.143 150.5);
+  --status-active-bg: oklch(96.5% 0.025 158.2);
+  --status-inactive: oklch(55% 0.014 285.9);
+  --status-inactive-bg: oklch(95.2% 0.002 286.4);
+  --status-vacation: oklch(67.6% 0.144 71);
+  --status-vacation-bg: oklch(96.4% 0.031 81.5);
+  --status-pending: oklch(54.8% 0.205 260.2);
+  --status-pending-bg: oklch(95.2% 0.02 259.9);
+  --status-suspended: oklch(55.7% 0.209 27.5);
+  --status-suspended-bg: oklch(95.8% 0.018 17.5);
+
+  /* --- Sidebar --- */
+  --sidebar: oklch(98.4% 0.001 286.4);
+  --sidebar-foreground: oklch(38.7% 0.014 285.7);
+  --sidebar-border: oklch(92% 0.004 286.3);
+
+  /* --- Tenant UaiOu: terra (laranja da marca) --- */
+  --primary: oklch(57.5% 0.179 35.6);
+  --primary-foreground: oklch(99.2% 0 89.9);
+  --ring: oklch(57.5% 0.179 35.6);
+  --brand-accent: oklch(67.9% 0.171 48.4);
+
+  /* Espaçamento — escala do produto, mantida para não reescrever 30 telas de uma vez. */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+}
+
+/* ===================== DARK MODE (neutros) ===================== */
+.dark {
+  --background: oklch(15.3% 0.005 285.7);
+  --foreground: oklch(97% 0 89.9);
+
+  --card: oklch(18.7% 0.007 285.7);
+  --card-foreground: oklch(97% 0 89.9);
+
+  --popover: oklch(17.6% 0.007 285.7);
+  --popover-foreground: oklch(97% 0 89.9);
+
+  --secondary: oklch(25.3% 0.007 285.9);
+  --secondary-foreground: oklch(97% 0 89.9);
+
+  --muted: oklch(25.3% 0.007 285.9);
+  --muted-foreground: oklch(68.7% 0.014 286);
+
+  --accent: oklch(27.3% 0.007 285.9);
+  --accent-foreground: oklch(97% 0 89.9);
+
+  --destructive: oklch(56.4% 0.199 26.5);
+  --destructive-foreground: oklch(98.5% 0 89.9);
+
+  --border: oklch(28.3% 0.008 285.9);
+  --input: oklch(31.3% 0.009 285.9);
+
+  --status-active: oklch(71.8% 0.175 150.9);
+  --status-active-bg: oklch(28.9% 0.048 154.2);
+  --status-inactive: oklch(68.7% 0.014 286);
+  --status-inactive-bg: oklch(27.3% 0.007 285.9);
+  --status-vacation: oklch(79.3% 0.158 74.7);
+  --status-vacation-bg: oklch(29.5% 0.047 78.8);
+  --status-pending: oklch(68.4% 0.151 254.7);
+  --status-pending-bg: oklch(25.9% 0.062 259.5);
+  --status-suspended: oklch(64.4% 0.174 23.3);
+  --status-suspended-bg: oklch(25.8% 0.064 22.7);
+
+  --sidebar: oklch(17.6% 0.007 285.7);
+  --sidebar-foreground: oklch(77.2% 0.01 286.2);
+  --sidebar-border: oklch(26.3% 0.007 285.9);
+
+  /* terra — dark */
+  --primary: oklch(67.1% 0.17 38.6);
+  --primary-foreground: oklch(21.2% 0.049 36.7);
+  --ring: oklch(67.1% 0.17 38.6);
+  --brand-accent: oklch(73.6% 0.14 52.5);
+}
+
+/* ===================== BASE ===================== */
+* {
+  box-sizing: border-box;
+  border-color: var(--border);
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* `--font-sans` vem do `next/font` no layout raiz (Inter self-hosted); a cadeia depois dela é a
+   mesma que o `tokens.css` do DS declara, e cobre o intervalo entre a primeira pintura e a
+   chegada da fonte. */
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+h1 {
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+h2 {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+}
+
+a {
+  color: var(--primary);
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--ring);
+  border-radius: var(--radius);
+}
+
+.mono,
+.font-mono {
+  font-family: var(--font-mono), ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+::selection {
+  background: color-mix(in oklch, var(--primary) 18%, transparent);
+}
+
+/* Rótulo só para leitor de tela — usado nos botões que mostram apenas um ícone. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Scrollbar fina — `.scrollbar-thin` do DS. */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.scrollbar-thin::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+@keyframes ds-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+.animate-pulse-ds {
+  animation: ds-pulse 1.6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* ------------------------------------------------------------------ shell */
+
+.app-shell {
+  display: grid;
+  grid-template-columns: 224px minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+.app-sidebar {
+  display: flex;
+  flex-direction: column;
+  background: var(--sidebar);
+  color: var(--sidebar-foreground);
+  border-right: 1px solid var(--sidebar-border);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+/* Cabeçalho de marca com a mesma altura da topbar (h-14 no DS): as duas réguas horizontais
+   precisam se encontrar na mesma linha, senão o topo da tela fica com um degrau. */
+.app-brand {
+  display: flex;
+  align-items: center;
+  height: 56px;
+  padding: 0 var(--space-3);
+  border-bottom: 1px solid var(--sidebar-border);
+  flex-shrink: 0;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.brand img {
+  display: block;
+  height: auto;
+  max-width: 100%;
+}
+
+/* "admin" ao lado do logotipo: peso e cor menores, para ler como qualificador da marca e não
+   como parte dela. */
+.brand-suffix {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+.app-nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-3) var(--space-2);
+}
+
+.app-nav-group + .app-nav-group {
+  margin-top: var(--space-4);
+}
+
+.app-nav-group-label {
+  padding: 0 var(--space-2) 6px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.5;
+}
+
+.app-nav a {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 500;
+  color: color-mix(in oklch, var(--foreground) 75%, transparent);
+  text-decoration: none;
+  transition: background-color 0.12s ease, color 0.12s ease;
+}
+
+.app-nav a + a {
+  margin-top: 2px;
+}
+
+.app-nav a:hover {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+/* Item ativo: fundo primary a 10% + barra vertical à esquerda — o padrão do AppShell do DS. */
+.app-nav a[aria-current="page"] {
+  background: color-mix(in oklch, var(--primary) 10%, transparent);
+  color: var(--primary);
+}
+
+.app-nav a[aria-current="page"]::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 3px;
+  height: 20px;
+  transform: translateY(-50%);
+  border-radius: 0 9999px 9999px 0;
+  background: var(--primary);
+}
+
+.app-user {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 2px var(--space-3);
+  padding: var(--space-3);
+  border-top: 1px solid var(--sidebar-border);
+}
+
+.app-avatar {
+  grid-row: span 2;
+  width: 32px;
+  height: 32px;
+  border-radius: 9999px;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  font-weight: 600;
+  background: color-mix(in oklch, var(--primary) 10%, transparent);
+  color: var(--primary);
+}
+
+.app-user-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--foreground);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-user-role {
+  font-size: 11px;
+  color: var(--muted-foreground);
+}
+
+/* ------------------------------------------------------------------ topbar */
+
+.app-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  height: 56px;
+  padding: 0 var(--space-4);
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in oklch, var(--background) 80%, transparent);
+  backdrop-filter: blur(8px);
+}
+
+.app-topbar-title {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  transition: background-color 0.12s ease, color 0.12s ease;
+}
+
+.icon-button:hover {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.app-content {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.app-main {
+  flex: 1;
+  min-width: 0;
+  padding: var(--space-5);
+  background: color-mix(in oklch, var(--muted) 20%, transparent);
+}
+
+/* Ritmo vertical da página — o `space-y-5` que o DS aplica no container de conteúdo.
+ *
+ * Antes só existia `.card + .card`, então a distância entre blocos dependia do TIPO dos vizinhos:
+ * dois cartões se separavam, mas um `grid-2` seguido de um cartão ficava colado, e um `Stat`
+ * seguido de `Alert` também. Espaçamento não pode ser sorteado pela combinação de elementos.
+ *
+ * Duas regras porque nem toda página embrulha o conteúdo num `<div>` — algumas retornam fragmento,
+ * e aí os blocos são filhos diretos de `.app-main`.
+ */
+.app-main > * + *,
+.app-main > div > * + * {
+  margin-top: var(--space-5);
+}
+
+/* ------------------------------------------------------------------ page header */
+
+/* Espelha o `PageHeader` do DS: trilha de migalhas, título 2xl semibold, descrição muted,
+   ação à direita, régua embaixo. */
+.page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--border);
+  /* Sem `margin-bottom`: quem dá o respiro é a regra de ritmo de `.app-main`. Manter os dois
+     somaria 24 + 24 e destacaria o cabeçalho mais do que os outros blocos entre si. */
+}
+
+.page-breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-bottom: var(--space-2);
+  font-size: 12px;
+  color: var(--muted-foreground);
+}
+
+.page-breadcrumbs > [aria-current="page"] {
+  color: var(--foreground);
+  font-weight: 500;
+}
+
+.page-subtitle {
+  margin: var(--space-1) 0 0;
+  font-size: 14px;
+  color: var(--muted-foreground);
+}
+
+/* ------------------------------------------------------------------ surfaces */
+
+.card {
+  background: var(--card);
+  color: var(--card-foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  padding: var(--space-5);
+}
+
+/* Cartões aninhados (mensagens de um chamado, por exemplo) ficam fora da regra de ritmo da
+   página, que só alcança os blocos de topo. */
+.card .card + .card {
+  margin-top: var(--space-3);
+}
+
+.card-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-3);
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: var(--space-3);
+}
+
+/* StatCard do DS: rótulo pequeno em cima, número 2xl tabular, ícone à direita. */
+.stat {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  padding: var(--space-4);
+}
+
+.stat-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  color: var(--muted-foreground);
+}
+
+.stat-label {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.stat-value {
+  margin: var(--space-2) 0 0;
+  font-size: 24px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-hint {
+  margin: var(--space-1) 0 0;
+  font-size: 12px;
+  color: var(--muted-foreground);
+}
+
+.stat-action {
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.stat-action:hover {
+  text-decoration: underline;
+}
+
+/* ------------------------------------------------------------------ table */
+
+/* DataTable do DS: a tabela mora numa moldura arredondada própria, com cabeçalho em muted/40.
+   A barra horizontal fica presa a esta moldura — nunca no documento. */
+.table-wrap {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.table-wrap > table.data {
+  border-radius: 0;
+}
+
+.table-scroll {
+  overflow-x: auto;
+}
+
+table.data {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+table.data thead tr {
+  background: color-mix(in oklch, var(--muted) 40%, transparent);
+  border-bottom: 1px solid var(--border);
+}
+
+table.data th {
+  padding: 10px 12px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted-foreground);
+  white-space: nowrap;
+}
+
+table.data td {
+  padding: 10px 12px;
+  text-align: left;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--border);
+}
+
+table.data tbody tr:last-child td {
+  border-bottom: none;
+}
+
+table.data tbody tr {
+  transition: background-color 0.12s ease;
+}
+
+table.data tbody tr:hover {
+  background: color-mix(in oklch, var(--muted) 40%, transparent);
+}
+
+/* Nas tabelas do DS o texto da célula é `foreground`, mesmo sendo link: uma coluna inteira em cor
+   de destaque compete com os badges de estado e perde a hierarquia. O sublinhado no hover é que
+   revela a navegação. */
+table.data td a {
+  color: inherit;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+table.data td a:hover {
+  text-decoration: underline;
+}
+
+.numeric {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Entrada e saída num extrato. Os tokens de status do DS carregam a semântica certa e já vêm
+   ajustados para o modo escuro. */
+.positive {
+  color: var(--status-active);
+  font-weight: 500;
+}
+
+.negative {
+  color: var(--destructive);
+  font-weight: 500;
+}
+
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+  font-size: 14px;
+  color: var(--muted-foreground);
+}
+
+/* ------------------------------------------------------------------ forms */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: var(--space-4);
+}
+
+.field label {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--foreground);
+}
+
+.field input,
+.field select,
+.field textarea {
+  font: inherit;
+  width: 100%;
+  padding: 6px 12px;
+  border: 1px solid var(--input);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--foreground);
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  transition: border-color 0.12s ease, box-shadow 0.12s ease;
+}
+
+.field input,
+.field select {
+  height: 36px;
+}
+
+.field textarea {
+  min-height: 72px;
+  padding: 8px 12px;
+}
+
+.field input::placeholder,
+.field textarea::placeholder {
+  color: var(--muted-foreground);
+}
+
+.field input:focus-visible,
+.field select:focus-visible,
+.field textarea:focus-visible {
+  outline: none;
+  border-color: var(--ring);
+  box-shadow: 0 0 0 1px var(--background), 0 0 0 3px color-mix(in oklch, var(--ring) 45%, transparent);
+}
+
+/* Fallback para `<textarea>` fora de `<Field>` (respostas de chamado, comentário de avaliação).
+ *
+ * Sem rótulo próprio essas caixas de texto livre nunca precisaram do wrapper — mas sem o wrapper
+ * elas também não herdavam NENHUM estilo do design system, só o padrão do navegador: fundo
+ * branco e `cols`/`rows` do HTML puro. Dentro do tema escuro isso aparecia como uma caixa branca
+ * pequena, destacada do resto da tela.
+ *
+ * Baixa especificidade (elemento puro) de propósito: onde `.field textarea` já se aplica, ele
+ * continua vencendo por especificidade — esta regra só entra como piso para quem não tem `.field`.
+ */
+textarea {
+  display: block;
+  font: inherit;
+  width: 100%;
+  min-height: 72px;
+  padding: 8px 12px;
+  border: 1px solid var(--input);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--foreground);
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  transition: border-color 0.12s ease, box-shadow 0.12s ease;
+}
+
+textarea::placeholder {
+  color: var(--muted-foreground);
+}
+
+textarea:focus-visible {
+  outline: none;
+  border-color: var(--ring);
+  box-shadow: 0 0 0 1px var(--background), 0 0 0 3px color-mix(in oklch, var(--ring) 45%, transparent);
+}
+
+.field-hint {
+  font-size: 12px;
+  color: var(--muted-foreground);
+}
+
+.field-error {
+  font-size: 13px;
+  color: var(--destructive);
+}
+
+.field[data-invalid="true"] input,
+.field[data-invalid="true"] select,
+.field[data-invalid="true"] textarea {
+  border-color: var(--destructive);
+}
+
+.field[data-invalid="true"] input:focus-visible,
+.field[data-invalid="true"] textarea:focus-visible {
+  box-shadow: 0 0 0 1px var(--background),
+    0 0 0 3px color-mix(in oklch, var(--destructive) 45%, transparent);
+}
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* Campo dentro de uma linha de formulário (`<Field>` dentro de `.form-row`, usado em
+   order-form.tsx).
+ *
+ * `.field input` já tem `width: 100%`, mas isso preenche o `.field` — e o `.field`, como item
+ * flex sem `flex-basis`, encolhia para o tamanho INTRÍNSECO do input (o padrão do navegador,
+ * ~20 caracteres). Por isso "Rua", "Bairro" e "Cidade" apareciam com larguras diferentes e
+ * aparentemente arbitrárias em vez de um grid uniforme — nenhum estava com tamanho customizado
+ * de propósito, só faltava o `flex-basis` que dissesse ao item para crescer.
+ *
+ * Linhas com só `<label>`+campo alinham ao topo: com `align-items: center` do `.form-row`, um
+ * campo com erro (mais alto, por causa da mensagem) puxava os vizinhos para fora do lugar.
+ */
+.form-row > .field {
+  flex: 1 1 220px;
+  min-width: 0;
+}
+
+.form-row:has(> .field) {
+  align-items: flex-start;
+}
+
+.form-row > input,
+.form-row > select {
+  font: inherit;
+  flex: 1 1 220px;
+  min-width: 0;
+  height: 36px;
+  padding: 6px 12px;
+  border: 1px solid var(--input);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--foreground);
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+.form-row > input::placeholder {
+  color: var(--muted-foreground);
+}
+
+.form-row > input:focus-visible,
+.form-row > select:focus-visible {
+  outline: none;
+  border-color: var(--ring);
+  box-shadow: 0 0 0 1px var(--background), 0 0 0 3px color-mix(in oklch, var(--ring) 45%, transparent);
+}
+
+/* Filtro binário no formato do TabsList do DS: trilho em muted, opção ativa em card elevado. */
+.form-row label.choice {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--input);
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.form-row label.choice:has(input:checked) {
+  border-color: var(--primary);
+  background: color-mix(in oklch, var(--primary) 10%, transparent);
+  color: var(--primary);
+}
+
+.form-row label.choice input {
+  accent-color: var(--primary);
+}
+
+.form-actions {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+
+/* ------------------------------------------------------------------ buttons */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  height: 36px;
+  padding: 0 16px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  background: var(--primary);
+  color: var(--primary-foreground);
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.12s ease, color 0.12s ease;
+}
+
+.btn:hover:not(:disabled) {
+  background: color-mix(in oklch, var(--primary) 90%, transparent);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* `secondary` do produto = `outline` do DS: é o botão de ação alternativa ao lado da principal. */
+.btn.secondary {
+  background: var(--background);
+  color: var(--foreground);
+  border-color: var(--input);
+}
+
+.btn.secondary:hover:not(:disabled) {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.btn.danger {
+  background: var(--destructive);
+  color: var(--destructive-foreground);
+}
+
+.btn.danger:hover:not(:disabled) {
+  background: color-mix(in oklch, var(--destructive) 90%, transparent);
+}
+
+.btn.ghost {
+  background: transparent;
+  box-shadow: none;
+  color: var(--foreground);
+}
+
+.btn.ghost:hover:not(:disabled) {
+  background: var(--accent);
+}
+
+.btn.small {
+  height: 32px;
+  padding: 0 12px;
+  font-size: 12px;
+}
+
+/* ------------------------------------------------------------------ feedback */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--muted);
+  color: var(--muted-foreground);
+}
+
+.badge.success {
+  background: var(--status-active-bg);
+  color: var(--status-active);
+  border-color: color-mix(in oklch, var(--status-active) 22%, transparent);
+}
+.badge.warning {
+  background: var(--status-vacation-bg);
+  color: var(--status-vacation);
+  border-color: color-mix(in oklch, var(--status-vacation) 22%, transparent);
+}
+.badge.danger {
+  background: var(--status-suspended-bg);
+  color: var(--status-suspended);
+  border-color: color-mix(in oklch, var(--status-suspended) 22%, transparent);
+}
+.badge.info {
+  background: var(--status-pending-bg);
+  color: var(--status-pending);
+  border-color: color-mix(in oklch, var(--status-pending) 22%, transparent);
+}
+
+/* StatusBadge do DS: pílula com ponto colorido — o ponto é o que dá leitura instantânea numa
+   coluna cheia de estados. */
+.status-badge {
+  border-radius: 9999px;
+  font-weight: 500;
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+.alert {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  margin-bottom: var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 14px;
+  background: var(--card);
+  color: var(--foreground);
+}
+
+.alert-icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.alert.error {
+  background: color-mix(in oklch, var(--destructive) 10%, transparent);
+  border-color: color-mix(in oklch, var(--destructive) 30%, transparent);
+  color: var(--destructive);
+}
+.alert.warning {
+  background: var(--status-vacation-bg);
+  border-color: color-mix(in oklch, var(--status-vacation) 30%, transparent);
+  color: var(--status-vacation);
+}
+.alert.info {
+  background: var(--status-pending-bg);
+  border-color: color-mix(in oklch, var(--status-pending) 30%, transparent);
+  color: var(--status-pending);
+}
+.alert.success {
+  background: var(--status-active-bg);
+  border-color: color-mix(in oklch, var(--status-active) 30%, transparent);
+  color: var(--status-active);
+}
+
+.alert-title {
+  margin: 0 0 2px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.alert p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  opacity: 0.9;
+}
+
+.alert-rule {
+  margin-top: var(--space-1);
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+/* EmptyState do DS: moldura tracejada, ícone em círculo muted, título + descrição. */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: 56px var(--space-5);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  text-align: center;
+}
+
+/* Dentro de um cartão o tracejado seria a segunda moldura ao redor do mesmo vazio; o cartão já
+   delimita a região. O ícone e o texto continuam — são eles que explicam o vazio. */
+.card > .empty-state,
+.card > * > .empty-state {
+  border: none;
+  padding: var(--space-6) var(--space-4);
+}
+
+.empty-state-icon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 9999px;
+  background: var(--muted);
+  color: var(--muted-foreground);
+}
+
+.empty-state h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.empty-state-body {
+  margin: var(--space-1) auto 0;
+  max-width: 24rem;
+  font-size: 14px;
+  color: var(--muted-foreground);
+}
+
+.empty-state-body p {
+  margin: 0;
+}
+
+.muted {
+  color: var(--muted-foreground);
+}
+
+.small {
+  font-size: 13px;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.spread {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* Código de entrega: grande e legível, é para ser ditado ao telefone (RF-W03.1). */
+.delivery-code {
+  display: inline-block;
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-mono), ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: 6px;
+  border: 1px dashed color-mix(in oklch, var(--primary) 40%, transparent);
+  border-radius: var(--radius);
+  background: color-mix(in oklch, var(--primary) 8%, transparent);
+  color: var(--primary);
+}
+
+.countdown {
+  font-family: var(--font-mono), ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 20px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* AuditTimeline do DS: marcador circular em primary/10 e fio conectando os eventos. */
+.timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-left: 1px solid var(--border);
+}
+
+.timeline li {
+  position: relative;
+  padding: 0 0 var(--space-5) var(--space-5);
+}
+
+.timeline li::before {
+  content: "";
+  position: absolute;
+  left: -7px;
+  top: 4px;
+  width: 13px;
+  height: 13px;
+  border-radius: 9999px;
+  border: 3px solid var(--background);
+  background: var(--primary);
+}
+
+.timeline-event {
+  font-weight: 500;
+}
+
+.timeline-time {
+  font-family: var(--font-mono), ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 11px;
+  color: var(--muted-foreground);
+}
+
+/* Série de barras — sem biblioteca de gráfico para uma leitura simples de 30 pontos. */
+.series {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 120px;
+  padding-top: var(--space-3);
+}
+
+.series-bar-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+  min-width: 4px;
+}
+
+.series-bar {
+  width: 100%;
+  min-height: 2px;
+  border-radius: 3px 3px 0 0;
+  background: var(--primary);
+}
+
+.series-label {
+  margin-top: var(--space-1);
+  writing-mode: vertical-rl;
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------------------ login */
+
+.login-shell,
+.notice-shell {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: var(--space-6) var(--space-4);
+  background: color-mix(in oklch, var(--muted) 35%, var(--background));
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  padding: var(--space-6);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  color: var(--card-foreground);
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+.login-card .card {
+  border: none;
+  box-shadow: none;
+  padding: 0;
+}
+
+.login-brand {
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--space-5);
+}
+
+.login-divider {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin: var(--space-4) 0;
+  font-size: 12px;
+  color: var(--muted-foreground);
+}
+
+.login-divider::before,
+.login-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.btn.google {
+  width: 100%;
+  background: var(--background);
+  color: var(--foreground);
+  border-color: var(--input);
+}
+
+/* TabsList do DS: trilho em `muted`, aba ativa como cartão elevado.
+   Usado nos filtros que são um conjunto FECHADO e mutuamente exclusivo (situação do chamado,
+   período da estatística). Antes eram botões `secondary` lado a lado, que se leem como quatro
+   ações independentes em vez de uma escolha entre quatro. */
+.tabs {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 4px;
+  border-radius: var(--radius);
+  background: var(--muted);
+}
+
+.tabs a {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 12px;
+  border-radius: calc(var(--radius) - 2px);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--muted-foreground);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 0.12s ease, color 0.12s ease;
+}
+
+.tabs a:hover {
+  color: var(--foreground);
+}
+
+.tabs a[aria-current="page"] {
+  background: var(--background);
+  color: var(--foreground);
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+/* Alternador de papel no formato do TabsList do DS. */
+.role-toggle {
+  display: flex;
+  gap: var(--space-1);
+  margin-bottom: var(--space-4);
+  padding: 4px;
+  border-radius: var(--radius);
+  background: var(--muted);
+}
+
+.role-toggle button {
+  flex: 1;
+  height: 30px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  border-radius: calc(var(--radius) - 2px);
+  background: transparent;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  transition: background-color 0.12s ease, color 0.12s ease;
+}
+
+.role-toggle button[aria-pressed="true"] {
+  background: var(--background);
+  color: var(--foreground);
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+/* ------------------------------------------------------------------ responsivo */
+
+@media (max-width: 900px) {
+  .app-shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .app-sidebar {
+    position: static;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--sidebar-border);
+  }
+
+  .app-nav {
+    display: flex;
+    overflow-x: auto;
+    gap: var(--space-2);
+    padding: var(--space-2);
+  }
+
+  .app-nav-group + .app-nav-group {
+    margin-top: 0;
+  }
+
+  .app-nav-group {
+    display: flex;
+    gap: var(--space-2);
+  }
+
+  .app-nav-group-label {
+    display: none;
+  }
+
+  .app-nav a {
+    white-space: nowrap;
+  }
+
+  .app-nav a + a {
+    margin-top: 0;
+  }
+
+  .app-nav a[aria-current="page"]::before {
+    display: none;
+  }
+
+  .app-main {
+    padding: var(--space-4);
+  }
+}
