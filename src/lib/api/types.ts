@@ -609,3 +609,22 @@ export interface NotificationListResponse {
   data: NotificationSummary[];
   meta: { page: number; perPage: number; total: number; unread: number };
 }
+
+// ---------------------------------------------------------------- geocodificação inversa
+
+/**
+ * `GET /geocoding/reverse` — o salto coordenada -> CEP do seletor de endereço no mapa.
+ *
+ * Todo campo é anulável, inclusive todos ao mesmo tempo: o provedor devolve o que o mapa tem
+ * naquele ponto, e "não sei o endereço daqui" é resposta legítima (200), não erro. Quem clicou já
+ * tem a coordenada, que é o dado que a entrega usa.
+ */
+export interface ReverseGeocodingResponse {
+  /** Só dígitos — `01014000`, nunca `01014-000`. */
+  postalCode: string | null;
+  street: string | null;
+  district: string | null;
+  city: string | null;
+  /** Sigla da UF. */
+  state: string | null;
+}

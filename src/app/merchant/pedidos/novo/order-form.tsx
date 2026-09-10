@@ -22,6 +22,15 @@ export function OrderForm() {
     lng: values.lng ?? "",
   });
 
+  // Rua, bairro e cidade deixam de ser `defaultValue`: o mapa preenche
+  // os três a partir do CEP do ponto marcado, e input não controlado
+  // ignora valor escrito de fora.
+  const [endereco, setEndereco] = useState({
+    street: values.street ?? "",
+    district: values.district ?? "",
+    city: values.city ?? "",
+  });
+
   return (
     <form action={formAction} noValidate>
       {state.status === "error" ? (
@@ -75,7 +84,13 @@ export function OrderForm() {
         ) : null}
         <div className="form-row">
           <Field label="Rua" name="street">
-            <input id="street" name="street" required defaultValue={values.street ?? ""} />
+            <input
+              id="street"
+              name="street"
+              required
+              value={endereco.street}
+              onChange={(e) => setEndereco((a) => ({ ...a, street: e.target.value }))}
+            />
           </Field>
           <Field label="Número" name="number">
             <input id="number" name="number" required defaultValue={values.number ?? ""} />
@@ -86,10 +101,21 @@ export function OrderForm() {
             <input id="complement" name="complement" defaultValue={values.complement ?? ""} />
           </Field>
           <Field label="Bairro" name="district">
-            <input id="district" name="district" required defaultValue={values.district ?? ""} />
+            <input
+              id="district"
+              name="district"
+              required
+              value={endereco.district}
+              onChange={(e) => setEndereco((a) => ({ ...a, district: e.target.value }))}
+            />
           </Field>
           <Field label="Cidade" name="city">
-            <input id="city" name="city" defaultValue={values.city ?? ""} />
+            <input
+              id="city"
+              name="city"
+              value={endereco.city}
+              onChange={(e) => setEndereco((a) => ({ ...a, city: e.target.value }))}
+            />
           </Field>
         </div>
         <Field
@@ -103,6 +129,16 @@ export function OrderForm() {
             lngInicial={values.lng}
             aoMudar={(lat, lng) =>
               setCoordenadas({ lat: String(lat), lng: String(lng) })
+            }
+            // Marcar outro ponto significa "o destino é outro", então
+            // rua/bairro/cidade são sobrescritos — só o número fica,
+            // porque CEP nenhum sabe o número da porta.
+            aoResolverEndereco={(e) =>
+              setEndereco((atual) => ({
+                street: e.rua ?? atual.street,
+                district: e.bairro ?? atual.district,
+                city: e.cidade ?? atual.city,
+              }))
             }
           />
           <input type="hidden" id="lat" name="lat" value={coordenadas.lat} />
