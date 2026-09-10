@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { EntitySelect, type EntityOption } from "@/components/entity-select";
 import { Alert, Field } from "@/components/ui";
 import {
   assignPlanAction,
@@ -36,23 +37,35 @@ export function CreatePlanForm() {
   );
 }
 
-export function AssignPlanForm({ plans }: { plans: { id: string; name: string }[] }) {
+export function AssignPlanForm({
+  plans,
+  merchants,
+}: {
+  plans: EntityOption[];
+  merchants: EntityOption[];
+}) {
   const [state, formAction, pending] = useActionState(assignPlanAction, IDLE);
   return (
     <form action={formAction}>
       {state.status === "ok" ? <Alert tone="success"><p>{state.message}</p></Alert> : null}
       {state.status === "error" ? <p className="small">{state.message}</p> : null}
-      <Field label="ID do estabelecimento" name="merchantId">
-        <input id="merchantId" name="merchantId" required />
+      <Field label="Estabelecimento" name="merchantId">
+        <EntitySelect
+          name="merchantId"
+          options={merchants}
+          required
+          placeholder="Selecione o estabelecimento…"
+          emptyMessage="Nenhum estabelecimento cadastrado."
+        />
       </Field>
       <Field label="Plano" name="planId">
-        <select id="planId" name="planId" required>
-          {plans.map((plan) => (
-            <option key={plan.id} value={plan.id}>
-              {plan.name}
-            </option>
-          ))}
-        </select>
+        <EntitySelect
+          name="planId"
+          options={plans}
+          required
+          placeholder="Selecione o plano…"
+          emptyMessage="Nenhum plano cadastrado."
+        />
       </Field>
       <div className="form-actions">
         <button className="btn small" type="submit" disabled={pending}>
@@ -63,14 +76,26 @@ export function AssignPlanForm({ plans }: { plans: { id: string; name: string }[
   );
 }
 
-export function CreditAdjustmentForm() {
+export function CreditAdjustmentForm({
+  merchants,
+  tickets,
+}: {
+  merchants: EntityOption[];
+  tickets: EntityOption[];
+}) {
   const [state, formAction, pending] = useActionState(creditAdjustmentAction, IDLE);
   return (
     <form action={formAction}>
       {state.status === "ok" ? <Alert tone="success"><p>{state.message}</p></Alert> : null}
       {state.status === "error" ? <p className="small">{state.message}</p> : null}
-      <Field label="ID do estabelecimento" name="targetUserId">
-        <input id="targetUserId" name="targetUserId" required />
+      <Field label="Estabelecimento" name="targetUserId">
+        <EntitySelect
+          name="targetUserId"
+          options={merchants}
+          required
+          placeholder="Selecione o estabelecimento…"
+          emptyMessage="Nenhum estabelecimento cadastrado."
+        />
       </Field>
       <Field label="Quantidade (negativo para debitar)" name="amount">
         <input id="amount" name="amount" type="number" required />
@@ -79,11 +104,17 @@ export function CreditAdjustmentForm() {
         <input id="reason" name="reason" required />
       </Field>
       <Field
-        label="ID do chamado de referência (obrigatório)"
+        label="Chamado de referência (obrigatório)"
         name="ticketId"
         hint="Todo ajuste de créditos precisa nascer de um chamado (RN-13.2)."
       >
-        <input id="ticketId" name="ticketId" required />
+        <EntitySelect
+          name="ticketId"
+          options={tickets}
+          required
+          placeholder="Selecione o chamado…"
+          emptyMessage="Nenhum chamado aberto para referenciar."
+        />
       </Field>
       <div className="form-actions">
         <button className="btn small" type="submit" disabled={pending}>
