@@ -4,11 +4,7 @@ import "leaflet/dist/leaflet.css";
 import { useEffect, useMemo, useRef, useState } from "react";
 import L from "leaflet";
 import { MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
-import {
-  enderecoPorCoordenada,
-  resumirEndereco,
-  type EnderecoPublico,
-} from "@/lib/geo/endereco-publico";
+import { enderecoPorCoordenada, type EnderecoPublico } from "@/lib/geo/endereco-publico";
 
 /**
  * Ícone padrão do Leaflet aponta para assets que o bundler não resolve
@@ -71,7 +67,6 @@ export function MapaDestino({
 
   const [posicao, setPosicao] = useState<[number, number] | null>(posicaoInicial);
   const [buscando, setBuscando] = useState(false);
-  const [enderecoResolvido, setEnderecoResolvido] = useState<EnderecoPublico | null>(null);
   const [avisoBusca, setAvisoBusca] = useState<string | null>(null);
 
   /**
@@ -93,7 +88,6 @@ export function MapaDestino({
     setBuscando(false);
 
     if (resultado.status === "encontrado") {
-      setEnderecoResolvido(resultado.endereco);
       aoResolverEndereco?.(resultado.endereco);
       return;
     }
@@ -106,7 +100,6 @@ export function MapaDestino({
 
   function definir(lat: number, lng: number) {
     setPosicao([lat, lng]);
-    setEnderecoResolvido(null);
     setAvisoBusca(null);
     aoMudar(lat, lng);
     if (aoResolverEndereco) void buscarEndereco(lat, lng);
@@ -139,18 +132,15 @@ export function MapaDestino({
           />
         ) : null}
       </MapContainer>
-      <p className="small" style={{ marginTop: "var(--space-2)" }}>
-        {posicao
-          ? `${posicao[0].toFixed(6)}, ${posicao[1].toFixed(6)} — arraste o pino para ajustar.`
-          : "Clique no mapa para marcar o ponto de entrega."}
-      </p>
+      {/* Sem ponto ainda, o mapa vazio não diz o que se espera de quem olha. Depois de marcado, o
+          pino já é a confirmação visual — repetir a coordenada em texto não acrescenta nada. */}
+      {posicao ? null : (
+        <p className="small" style={{ marginTop: "var(--space-2)" }}>
+          Clique no mapa para marcar o ponto de entrega.
+        </p>
+      )}
       {buscando ? (
         <p className="small">Buscando o endereço deste ponto…</p>
-      ) : null}
-      {enderecoResolvido ? (
-        <p className="small" style={{ fontWeight: 600 }}>
-          {resumirEndereco(enderecoResolvido)}
-        </p>
       ) : null}
       {avisoBusca ? (
         <p className="small" style={{ color: "var(--warning, #b45309)" }}>

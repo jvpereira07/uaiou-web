@@ -122,7 +122,6 @@ export function OrderForm() {
           label="Ponto de entrega no mapa"
           name="lat"
           error={state.field === "destination" && !coordenadas.lat ? "Marque o destino no mapa." : null}
-          hint="É a coordenada que ancora o geofence da finalização — não o endereço digitado acima."
         >
           <MapaDestino
             latInicial={values.lat}

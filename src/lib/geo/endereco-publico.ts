@@ -3,9 +3,9 @@
  * ENDEREÇO POR COORDENADA — APIS PÚBLICAS
  * ===============================================================
  *
- * Dois saltos encadeados, ambos em serviços públicos sem chave —
- * espelho exato do `repositorio_endereco_publico.dart` do app Flutter,
- * para os dois clientes preencherem o mesmo formulário do mesmo jeito:
+ * Dois saltos encadeados — espelho do
+ * `repositorio_endereco_publico.dart` do app Flutter, para os dois
+ * clientes preencherem o mesmo formulário do mesmo jeito:
  *
  *  1. **`GET /geocoding/reverse` do nosso backend** traduz o ponto
  *     clicado no mapa em um `postcode`. Quem fala com o Geoapify é o
@@ -54,16 +54,6 @@ export function formatarCep(cep: string): string {
   return digitos.length === 8 ? `${digitos.slice(0, 5)}-${digitos.slice(5)}` : digitos;
 }
 
-/** Uma linha legível para confirmar visualmente o ponto marcado. */
-export function resumirEndereco(endereco: EnderecoPublico): string {
-  const cidadeUf = endereco.cidade
-    ? [endereco.cidade, endereco.uf].filter(Boolean).join("/")
-    : null;
-  return [endereco.rua, endereco.bairro, cidadeUf, formatarCep(endereco.cep)]
-    .filter(Boolean)
-    .join(" · ");
-}
-
 function texto(valor: unknown): string | undefined {
   if (typeof valor !== "string") return undefined;
   const limpo = valor.trim();
@@ -85,9 +75,10 @@ export async function enderecoPorCoordenada(
 
   try {
     const endereco = await enderecoPorCep(cep, sinal);
-    // CEP que o Nominatim conhece e o ViaCEP não é raro (CEP novo, ou
-    // grafia estrangeira). Ainda assim temos o CEP: devolvemos ele
-    // sozinho em vez de fingir que nada foi encontrado.
+    // CEP que o geocodificador conhece e o ViaCEP não é comum (CEP
+    // novo, ou o CEP geral de cidade pequena). Ainda assim temos o
+    // CEP: devolvemos ele sozinho em vez de fingir que nada foi
+    // encontrado.
     return { status: "encontrado", endereco: endereco ?? { cep } };
   } catch {
     return { status: "falha", mensagem: FALHA_DE_REDE };
