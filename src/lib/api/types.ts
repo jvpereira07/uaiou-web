@@ -546,6 +546,7 @@ export interface AdminUserDetail {
   role: Role;
   status: UserStatus;
   displayName: string;
+  username: string;
   email: string;
   telefone?: string | null;
   profile: MeProfile;

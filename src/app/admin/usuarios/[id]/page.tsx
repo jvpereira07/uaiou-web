@@ -49,6 +49,7 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
         <Card title="Dados">
           <DefinitionList
             items={[
+              { term: "Nome de usuário", value: user.username },
               { term: "E-mail", value: user.email },
               { term: "Telefone", value: user.telefone ?? "não informado" },
               { term: "CPF", value: user.profile.cpf ?? "—" },
