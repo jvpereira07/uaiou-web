@@ -466,7 +466,19 @@ export interface MeProfile {
   address?: Address;
   /** `BigDecimal` com `@JsonFormat(shape = STRING)`: chega como string, ao contrário de score/stats. */
   score?: string;
+  /** Só entregador — ausente enquanto ele não escolheu (V22). */
+  paymentMethod?: PaymentMethod;
 }
+
+/** `PaymentMethod` do backend — forma de pagamento aceita pelo entregador. */
+export type PaymentMethod = "cash" | "credit" | "debit" | "pix";
+
+export const PAYMENT_METHOD_LABEL: Record<PaymentMethod, string> = {
+  cash: "Dinheiro",
+  credit: "Crédito",
+  debit: "Débito",
+  pix: "Pix",
+};
 
 /** `GET`/`PATCH /me` — bootstrap do usuário logado (`MeResponse.java`). */
 export interface MeResponse {

@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { Badge, Card, DefinitionList, EmptyState, PageHeader, StatusBadge } from "@/components/ui";
 import { admin } from "@/lib/api/endpoints";
 import { ApiError } from "@/lib/api/errors";
+import { PAYMENT_METHOD_LABEL } from "@/lib/api/types";
 import { formatDateTime, formatScore } from "@/lib/format";
 import { userStatus } from "@/lib/status";
 import { LiftSanctionButton } from "./lift-sanction-button";
@@ -55,6 +56,16 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
               { term: "CPF", value: user.profile.cpf ?? "—" },
               { term: "CNPJ", value: user.profile.cnpj ?? "—" },
               { term: "Score", value: user.profile.score ? formatScore(Number(user.profile.score)) : "sem base" },
+              ...(user.role === "COURIER"
+                ? [
+                    {
+                      term: "Forma de pagamento",
+                      value: user.profile.paymentMethod
+                        ? PAYMENT_METHOD_LABEL[user.profile.paymentMethod]
+                        : "não informada",
+                    },
+                  ]
+                : []),
               {
                 term: "Bloqueado por estabelecimentos",
                 value: user.blockedByMerchantCount ?? "—",
