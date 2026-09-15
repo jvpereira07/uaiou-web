@@ -19,6 +19,7 @@ import type {
   MerchantSummary,
   NotificationListResponse,
   MyCreditsResponse,
+  OrderLifecycleResponse,
   OrderResponse,
   OrderSummary,
   PageResponse,
@@ -65,6 +66,12 @@ export const orders = {
     api.get<CounterofferResponse[]>(`/orders/${orderId}/counteroffers`),
   decideCounteroffer: (counterofferId: string, outcome: "accepted" | "rejected") =>
     api.put<unknown>(`/counteroffers/${counterofferId}/decision`, { outcome }),
+  /** RF-26.7 — a loja entrega o pacote na mão e confirma; só ela pode. */
+  confirmPickup: (orderId: string) =>
+    api.post<OrderLifecycleResponse>(`/orders/${orderId}/pickup/confirmation`, {}),
+  /** RF-26.14 — cancelamento até a coleta, com motivo obrigatório. */
+  cancel: (orderId: string, body: { reason: string; note?: string | null }) =>
+    api.post<OrderLifecycleResponse>(`/orders/${orderId}/cancellation`, body),
 };
 
 export const delivery = {

@@ -78,6 +78,66 @@ export async function dispatchCodeAction(
 }
 
 /**
+ * RF-26.7 — confirma que o pacote foi entregue ao entregador. 422 (`COURIER_NOT_AT_PICKUP`) e 409
+ * (o entregador desistiu, ou o pedido já saiu deste estado) vêm com a mensagem do servidor.
+ */
+export async function confirmPickupAction(
+  _previous: ActionState,
+  form: FormData,
+): Promise<ActionState> {
+  const orderId = String(form.get("orderId") ?? "");
+
+  try {
+    await orders.confirmPickup(orderId);
+  } catch (error) {
+    return handle(error, "Este pedido não está mais aguardando coleta. Recarregue para ver o estado atual.");
+  }
+
+  revalidatePath(`/merchant/pedidos/${orderId}`);
+  return { status: "ok", message: "Coleta confirmada. A entrega está a caminho." };
+}
+
+/**
+ * RF-26.14/RF-26.17 — cancela até a coleta. A taxa, quando o entregador já chegou, é decidida pelo
+ * servidor dentro do lock; a resposta diz quanto foi lançado.
+ */
+export async function cancelOrderAction(
+  _previous: ActionState,
+  form: FormData,
+): Promise<ActionState> {
+  const orderId = String(form.get("orderId") ?? "");
+  const reason = String(form.get("reason") ?? "");
+  const note = String(form.get("note") ?? "").trim();
+
+  if (!reason) {
+    return { status: "error", message: "Escolha o motivo do cancelamento." };
+  }
+  if (reason === "other" && !note) {
+    return { status: "error", message: "Descreva o motivo quando escolher “outro”." };
+  }
+
+  let fee: string | null = null;
+  try {
+    const resposta = await orders.cancel(orderId, { reason, note: note || null });
+    fee = resposta.cancellationFee ?? null;
+  } catch (error) {
+    return handle(
+      error,
+      "Este pedido não pode mais ser cancelado — o entregador já coletou o pacote. Recarregue para ver o estado atual.",
+    );
+  }
+
+  revalidatePath(`/merchant/pedidos/${orderId}`);
+  revalidatePath("/merchant/pedidos");
+  return {
+    status: "ok",
+    message: fee
+      ? `Pedido cancelado. Taxa de R$ ${fee} a pagar ao entregador, que já havia chegado.`
+      : "Pedido cancelado.",
+  };
+}
+
+/**
  * RF-W03.7 — contestação de entrega `finalizado_contestavel` em v1 é sempre um chamado de suporte,
  * já com a referência do pedido preenchida (T-21). Sem essa referência, o time de suporte reabriria
  * o contexto do zero a cada chamado.

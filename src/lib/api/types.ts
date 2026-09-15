@@ -103,6 +103,8 @@ export type OrderStatus =
   | "published"
   | "in_negotiation"
   | "accepted"
+  /** T-26 — estabelecimento confirmou a entrega do pacote ao entregador. */
+  | "picked_up"
   | "finalized"
   | "contestable_finalized"
   | "cancelled";
@@ -133,6 +135,9 @@ export interface OrderSummary {
   destination: DestinationResponse;
   createdAt: string;
   acceptedAt?: string | null;
+  /** T-26 — marcos da retirada. */
+  arrivedAt?: string | null;
+  pickedUpAt?: string | null;
   _links?: Links;
 }
 
@@ -160,7 +165,17 @@ export interface OrderResponse {
   expectedDeliveryAt?: string | null;
   destination: DestinationResponse;
   receiver?: { name: string; phone?: string | null } | null;
-  courier?: { id: string; name: string } | null;
+  /** T-26 — placa e foto identificam o entregador na porta da loja (RF-26.6). */
+  courier?: { id: string; name: string; vehiclePlate?: string | null; photoUrl?: string | null } | null;
+  merchant?: MerchantRef | null;
+  acceptedAt?: string | null;
+  arrivedAt?: string | null;
+  pickedUpAt?: string | null;
+  cancellation?: { reason: string; note?: string | null; cancelledAt: string } | null;
+  /** Taxa que o cancelamento custaria AGORA — vem do servidor, não se calcula aqui (RF-26.17). */
+  pendingCancellationFee?: Money | null;
+  /** `false` quando a loja não marcou o ponto no mapa: sem isso não há aviso de chegada (RF-26.5). */
+  pickupLocationKnown?: boolean;
   _links?: Links;
 }
 
@@ -177,6 +192,17 @@ export interface CreateOrderRequest {
     lng?: string | null;
   };
   receiver: { name: string; phone?: string | null };
+}
+
+/** Resposta das transições de T-26 (coleta, cancelamento): o estado do pedido depois da ação. */
+export interface OrderLifecycleResponse {
+  orderId: string;
+  status: OrderStatus;
+  arrivedAt?: string | null;
+  pickedUpAt?: string | null;
+  cancelledAt?: string | null;
+  cancellationFee?: Money | null;
+  _links?: Links;
 }
 
 export type CounterofferStatus = "pending" | "accepted" | "rejected" | "invalidated";
@@ -468,6 +494,8 @@ export interface MeProfile {
   score?: string;
   /** Só entregador — pode aceitar várias; lista vazia enquanto não informou (V23). */
   paymentMethods?: PaymentMethod[];
+  /** Foto do entregador ou logo do estabelecimento — URL de leitura com validade de uma hora. */
+  photoUrl?: string | null;
 }
 
 /** `PaymentMethod` do backend — forma de pagamento aceita pelo entregador. */
@@ -508,6 +536,8 @@ export interface PatchMeRequest {
     cep?: string;
     lat?: string;
     lng?: string;
+    /** Upload já confirmado da nova imagem de perfil — o vínculo é pelo upload, nunca pela chave. */
+    photoUploadId?: string;
   };
 }
 

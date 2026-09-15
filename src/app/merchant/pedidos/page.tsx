@@ -23,6 +23,8 @@ const STATUS_FILTERS: { value: string; label: string }[] = [
   { value: "published", label: "Publicados" },
   { value: "in_negotiation", label: "Em negociação" },
   { value: "accepted", label: "Aceitos" },
+  { value: "picked_up", label: "Coletados" },
+  { value: "cancelled", label: "Cancelados" },
   { value: "finalized", label: "Finalizados" },
   { value: "contestable_finalized", label: "Sem código" },
 ];

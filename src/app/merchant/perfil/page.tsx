@@ -1,5 +1,6 @@
 import { PageHeader } from "@/components/ui";
 import { profile } from "@/lib/api/endpoints";
+import { PhotoForm } from "./photo-form";
 import { ProfileForm } from "./profile-form";
 
 export const metadata = { title: "Perfil" };
@@ -18,6 +19,7 @@ export default async function MerchantProfilePage() {
         title="Perfil"
         description="Nome, telefone e endereço do estabelecimento. O CNPJ é um campo verificado — mude-o pelo suporte."
       />
+      <PhotoForm photoUrl={me.profile?.photoUrl} />
       <ProfileForm me={me} />
     </>
   );

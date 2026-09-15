@@ -9,6 +9,7 @@ import { Counteroffers } from "./counteroffers";
 import { DeliveryCode } from "./delivery-code";
 import { ContingencyAlert } from "./contingency-alert";
 import { OpenTicketButton } from "./open-ticket-button";
+import { CancelOrder, ConfirmPickup } from "./pickup-actions";
 import { PollOnFocus } from "./poll-on-focus";
 
 /**
@@ -42,7 +43,11 @@ export default async function OrderDetailPage({
   const negotiating = order.status === "published" || order.status === "in_negotiation";
   const counteroffers = negotiating ? await orders.counteroffers(id) : [];
 
-  const showCode = order.status === "accepted";
+  // T-26 — o código passa a valer da coleta em diante, mas o estabelecimento consulta desde o
+  // aceite: é ele quem repassa ao recebedor.
+  const showCode = order.status === "accepted" || order.status === "picked_up";
+  const canConfirmPickup = Boolean(order._links?.["pickupConfirmation"]);
+  const canCancel = Boolean(order._links?.["cancellation"]);
   let codeGone = false;
   const code = showCode
     ? await delivery.code(id).catch((error) => {
@@ -103,7 +108,18 @@ export default async function OrderDetailPage({
 
         <Card title="Entregador">
           {order.courier ? (
-            <p>{order.courier.name}</p>
+            <>
+              <p>
+                {order.courier.name}
+                {order.courier.vehiclePlate ? ` — placa ${order.courier.vehiclePlate}` : null}
+              </p>
+              {order.arrivedAt ? (
+                <p className="small muted">Chegou ao estabelecimento {formatElapsed(order.arrivedAt)}.</p>
+              ) : null}
+              {order.pickedUpAt ? (
+                <p className="small muted">Coletou o pacote {formatElapsed(order.pickedUpAt)}.</p>
+              ) : null}
+            </>
           ) : (
             <p className="muted">
               {negotiating ? "Ainda sem entregador atribuído." : "Nenhum entregador nesta entrega."}
@@ -119,6 +135,27 @@ export default async function OrderDetailPage({
           proposedFee={order.proposedFee}
           decidable={negotiating}
         />
+      ) : null}
+
+      {canConfirmPickup ? (
+        <ConfirmPickup
+          orderId={order.id}
+          courierName={order.courier?.name}
+          vehiclePlate={order.courier?.vehiclePlate}
+          photoUrl={order.courier?.photoUrl}
+          arrived={Boolean(order.arrivedAt)}
+        />
+      ) : null}
+
+      {/* RF-26.5 — sem ponto no mapa o servidor não detecta a chegada; dizer isso é melhor que
+          deixar o estabelecimento esperando um aviso que nunca vem. */}
+      {order.status === "accepted" && order.pickupLocationKnown === false ? (
+        <Alert tone="info" title="Marque a localização do estabelecimento">
+          <p>
+            Sem o ponto no mapa no seu <Link href="/merchant/perfil">perfil</Link>, não conseguimos
+            avisar quando o entregador chegar para retirar.
+          </p>
+        </Alert>
       ) : null}
 
       {code ? <DeliveryCode orderNumber={order.number} code={code} /> : null}
@@ -138,6 +175,23 @@ export default async function OrderDetailPage({
           deadlineAt={contingency.deadline}
           receiverPhone={order.receiver?.phone ?? null}
         />
+      ) : null}
+
+      {canCancel ? (
+        <CancelOrder
+          orderId={order.id}
+          orderNumber={order.number}
+          pendingFee={order.pendingCancellationFee}
+        />
+      ) : null}
+
+      {order.status === "cancelled" ? (
+        <Card title="Pedido cancelado">
+          <p>
+            Cancelado {order.cancellation ? formatElapsed(order.cancellation.cancelledAt) : ""}
+            {order.cancellation?.note ? ` — ${order.cancellation.note}` : "."}
+          </p>
+        </Card>
       ) : null}
 
       {order.status === "finalized" ? (

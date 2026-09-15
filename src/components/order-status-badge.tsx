@@ -10,6 +10,8 @@ const LABELS: Record<OrderStatus, { label: string; tone: BadgeTone }> = {
   published: { label: "Publicado", tone: "info" },
   in_negotiation: { label: "Em negociação", tone: "warning" },
   accepted: { label: "Aceito", tone: "success" },
+  // Coletado é "o pacote saiu": a loja não cancela mais, e o que resta é a entrega.
+  picked_up: { label: "Coletado", tone: "info" },
   finalized: { label: "Finalizado", tone: "neutral" },
   // Contestável não é sucesso nem falha: é uma entrega que fechou sem código, e o estabelecimento
   // precisa olhar. Amarelo comunica exatamente isso.
