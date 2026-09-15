@@ -59,10 +59,10 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
               ...(user.role === "COURIER"
                 ? [
                     {
-                      term: "Forma de pagamento",
-                      value: user.profile.paymentMethod
-                        ? PAYMENT_METHOD_LABEL[user.profile.paymentMethod]
-                        : "não informada",
+                      term: "Formas de pagamento",
+                      value: user.profile.paymentMethods?.length
+                        ? user.profile.paymentMethods.map((m) => PAYMENT_METHOD_LABEL[m]).join(", ")
+                        : "não informadas",
                     },
                   ]
                 : []),

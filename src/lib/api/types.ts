@@ -466,8 +466,8 @@ export interface MeProfile {
   address?: Address;
   /** `BigDecimal` com `@JsonFormat(shape = STRING)`: chega como string, ao contrário de score/stats. */
   score?: string;
-  /** Só entregador — ausente enquanto ele não escolheu (V22). */
-  paymentMethod?: PaymentMethod;
+  /** Só entregador — pode aceitar várias; lista vazia enquanto não informou (V23). */
+  paymentMethods?: PaymentMethod[];
 }
 
 /** `PaymentMethod` do backend — forma de pagamento aceita pelo entregador. */
