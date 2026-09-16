@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { AppShell } from "@/components/app-shell";
 import type { NavGroup } from "@/components/app-nav";
+import { WebPush } from "@/components/web-push";
 import { requireSession } from "@/lib/session";
 
 /** Grupos separam a operação do dia (pedidos) do que se olha de vez em quando (dinheiro, conta). */
@@ -45,6 +46,7 @@ export default async function MerchantLayout({ children }: { children: ReactNode
       root="/merchant"
       user={{ displayName: session.user.displayName, role: "Estabelecimento" }}
     >
+      <WebPush />
       {children}
     </AppShell>
   );

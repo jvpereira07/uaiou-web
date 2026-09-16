@@ -1377,3 +1377,19 @@ textarea:focus-visible {
     padding: var(--space-4);
   }
 }
+
+/* Aviso de push com a aba em foco — canto inferior direito, acima do conteúdo. */
+.push-toast {
+  position: fixed;
+  right: var(--space-4);
+  bottom: var(--space-4);
+  z-index: 60;
+  width: min(380px, calc(100vw - 2 * var(--space-4)));
+  cursor: pointer;
+  box-shadow: 0 8px 24px color-mix(in oklch, var(--foreground) 18%, transparent);
+  border-radius: var(--radius);
+}
+.push-toast .alert {
+  margin-bottom: 0;
+  background: var(--card);
+}

@@ -206,3 +206,17 @@ export const notifications = {
       `/me/notifications${query({ type, perPage: 100 })}`,
     ),
 };
+
+export interface DeviceResponse {
+  id: string;
+  platform: string;
+  appVersion?: string | null;
+  lastUsedAt?: string | null;
+}
+
+/** `POST/DELETE /me/devices` — upsert pelo token FCM no backend (RF-08.3). */
+export const devices = {
+  register: (pushToken: string) =>
+    api.post<DeviceResponse>("/me/devices", { platform: "web", pushToken }),
+  remove: (id: string) => api.delete<unknown>(`/me/devices/${id}`),
+};
