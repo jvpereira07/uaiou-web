@@ -3,7 +3,8 @@
 import "leaflet/dist/leaflet.css";
 import { useEffect, useMemo, useRef, useState } from "react";
 import L from "leaflet";
-import { MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
+import { MapContainer, Marker, useMapEvents } from "react-leaflet";
+import { CamadaMapaBase } from "@/components/camada-mapa-base";
 import { enderecoPorCoordenada, type EnderecoPublico } from "@/lib/geo/endereco-publico";
 
 /**
@@ -112,10 +113,7 @@ export function MapaDestino({
         zoom={posicao ? 16 : 13}
         style={{ height: 280, width: "100%", borderRadius: "var(--radius)" }}
       >
-        <TileLayer
-          url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        />
+        <CamadaMapaBase />
         <CapturaDeClique aoClicar={definir} />
         {posicao ? (
           <Marker
