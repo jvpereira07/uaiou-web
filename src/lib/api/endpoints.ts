@@ -2,7 +2,13 @@ import "server-only";
 
 import { api } from "./server";
 import type {
+  AdminOrderAction,
   AdminOrderDetail,
+  AdminOrdersOverview,
+  AdminOrderSummary,
+  TimeoutOccurrence,
+  TimeoutRule,
+  TimeoutSetting,
   AdminUserDetail,
   AuditLogEntry,
   ConfirmUploadResponse,
@@ -166,6 +172,25 @@ export const admin = {
     api.post<SanctionSummary>(`/admin/users/${userId}/sanctions`, body),
   liftSanction: (sanctionId: string) => api.delete<unknown>(`/admin/sanctions/${sanctionId}`),
   order: (id: string) => api.get<AdminOrderDetail>(`/admin/orders/${id}`),
+  orders: (params: {
+    status?: string;
+    search?: string;
+    merchantId?: string;
+    courierId?: string;
+    from?: string;
+    to?: string;
+    page?: number;
+    perPage?: number;
+  }) => api.get<PageResponse<AdminOrderSummary>>(`/admin/orders${query(params)}`),
+  ordersOverview: () => api.get<AdminOrdersOverview>("/admin/orders/overview"),
+  orderAction: (id: string, body: { action: AdminOrderAction; reason: string }) =>
+    api.post<AdminOrderDetail>(`/admin/orders/${id}/actions`, body),
+  timeouts: () => api.get<TimeoutSetting[]>("/admin/timeouts"),
+  updateTimeout: (rule: TimeoutRule, body: { minutes: number; active: boolean }) =>
+    api.put<TimeoutSetting>(`/admin/timeouts/${rule}`, body),
+  runTimeouts: () => api.post<{ affected: Partial<Record<TimeoutRule, number>> }>("/admin/timeouts/run", undefined),
+  timeoutOccurrences: (params: { page?: number; perPage?: number } = {}) =>
+    api.get<PageResponse<TimeoutOccurrence>>(`/admin/timeouts/occurrences${query(params)}`),
   auditLogs: (params: {
     adminId?: string;
     action?: string;

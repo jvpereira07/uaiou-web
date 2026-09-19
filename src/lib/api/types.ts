@@ -599,17 +599,72 @@ export interface AdminUserDetail {
   createdAt: string;
 }
 
+/** Intervenção manual do admin no estado do pedido — `POST /admin/orders/{id}/actions`. */
+export type AdminOrderAction = "cancel" | "return_to_showcase" | "mark_picked_up" | "finalize";
+
 export interface AdminOrderDetail {
   id: string;
   number: string;
   status: OrderStatus;
   merchant?: { id: string; name: string } | null;
   courier?: { id: string; name: string } | null;
+  proposedFee: Money;
   finalFee?: Money | null;
   contestedDelivery: boolean;
+  createdAt: string;
+  /** `reason` é o código do estabelecimento, ou `admin`/`timeout` quando a plataforma cancelou. */
+  cancellation?: { reason: string; note?: string | null; cancelledAt: string } | null;
+  /** Ações que o backend aceita no status atual — a tela não recalcula a máquina de estados. */
+  availableActions: AdminOrderAction[];
   /** RF-21.8 — composta por união de várias tabelas; nunca inclui o código de entrega (RF-21.9). */
   timeline: { at: string; event: string; details?: Record<string, unknown> | null }[];
   _links?: Links;
+}
+
+export interface AdminOrderSummary {
+  id: string;
+  number: string;
+  status: OrderStatus;
+  merchant?: { id: string; name: string | null } | null;
+  courier?: { id: string; name: string | null } | null;
+  proposedFee: Money;
+  finalFee?: Money | null;
+  neighborhood?: string | null;
+  createdAt: string;
+  acceptedAt?: string | null;
+  pickedUpAt?: string | null;
+  finalizedAt?: string | null;
+  cancelledAt?: string | null;
+  cancellationReason?: string | null;
+}
+
+export type TimeoutRule = "unaccepted" | "not_picked_up" | "not_delivered";
+export type TimeoutAction = "cancel" | "return_to_showcase" | "flag";
+
+export interface AdminOrdersOverview {
+  byStatus: Partial<Record<OrderStatus, number>>;
+  /** Pedidos que já passaram do prazo de cada regra agora — ligada ou não. */
+  overdue: Partial<Record<TimeoutRule, number>>;
+}
+
+export interface TimeoutSetting {
+  rule: TimeoutRule;
+  action: TimeoutAction;
+  minutes: number;
+  active: boolean;
+  overdueNow: number;
+  updatedAt: string;
+  updatedBy?: { id: string; name: string } | null;
+}
+
+export interface TimeoutOccurrence {
+  id: string;
+  orderId: string;
+  orderNumber?: string | null;
+  rule: TimeoutRule;
+  action: TimeoutAction;
+  previousStatus: OrderStatus;
+  at: string;
 }
 
 export interface AuditLogEntry {

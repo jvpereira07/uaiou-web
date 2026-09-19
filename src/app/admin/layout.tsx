@@ -21,6 +21,13 @@ const NAV: readonly NavGroup[] = [
     ],
   },
   {
+    label: "Entregas",
+    items: [
+      { href: "/admin/pedidos", label: "Entregas", icon: "Box" },
+      { href: "/admin/timeouts", label: "Timeouts", icon: "Alert" },
+    ],
+  },
+  {
     label: "Plataforma",
     items: [
       { href: "/admin/planos", label: "Planos", icon: "CreditCard" },

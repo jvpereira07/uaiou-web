@@ -1,8 +1,12 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Badge, Card, DefinitionList, EmptyState, PageHeader } from "@/components/ui";
+import { Card, DefinitionList, EmptyState, PageHeader } from "@/components/ui";
+import { OrderStatusBadge } from "@/components/order-status-badge";
 import { admin } from "@/lib/api/endpoints";
 import { ApiError } from "@/lib/api/errors";
 import { formatDateTime, formatMoney } from "@/lib/format";
+import { cancellationReasonLabel, eventLabel } from "../labels";
+import { OrderActionForm } from "./order-action-form";
 
 /**
  * RF-W05.6 — espelho administrativo: linha do tempo composta, e **nunca** o código de entrega
@@ -26,24 +30,59 @@ export default async function AdminOrderDetailPage({
     <div>
       <PageHeader
         title={`Pedido nº ${order.number}`}
-        breadcrumbs={["UaiOu", "Administração", "Pedidos", `nº ${order.number}`]}
-        action={
-          <Badge tone={order.contestedDelivery ? "danger" : "neutral"}>{order.status}</Badge>
-        }
+        breadcrumbs={["UaiOu", "Administração", "Entregas", `nº ${order.number}`]}
+        action={<OrderStatusBadge status={order.status} />}
       />
 
       <div className="grid-2">
         <Card title="Estabelecimento">
-          <p>{order.merchant?.name ?? "—"}</p>
+          {order.merchant ? (
+            <Link href={`/admin/usuarios/${order.merchant.id}`}>{order.merchant.name}</Link>
+          ) : (
+            <p>—</p>
+          )}
         </Card>
         <Card title="Entregador">
-          <p>{order.courier?.name ?? "Sem entregador atribuído"}</p>
+          {order.courier ? (
+            <Link href={`/admin/usuarios/${order.courier.id}`}>{order.courier.name}</Link>
+          ) : (
+            <p>Sem entregador atribuído</p>
+          )}
         </Card>
       </div>
 
-      <Card title="Financeiro">
-        <DefinitionList items={[{ term: "Frete final", value: formatMoney(order.finalFee) }]} />
-      </Card>
+      <div className="grid-2">
+        <Card title="Resumo">
+          <DefinitionList
+            items={[
+              { term: "Criado em", value: formatDateTime(order.createdAt) },
+              { term: "Frete proposto", value: formatMoney(order.proposedFee) },
+              { term: "Frete final", value: formatMoney(order.finalFee) },
+              ...(order.cancellation
+                ? [
+                    {
+                      term: "Cancelamento",
+                      value: `${cancellationReasonLabel(order.cancellation.reason)} · ${formatDateTime(order.cancellation.cancelledAt)}`,
+                    },
+                    ...(order.cancellation.note
+                      ? [{ term: "Nota", value: order.cancellation.note }]
+                      : []),
+                  ]
+                : []),
+            ]}
+          />
+        </Card>
+
+        <Card title="Alterar estado">
+          {order.availableActions.length === 0 ? (
+            <EmptyState title="Nenhuma ação disponível">
+              <p>O pedido está em estado final.</p>
+            </EmptyState>
+          ) : (
+            <OrderActionForm key={order.status} orderId={order.id} actions={order.availableActions} />
+          )}
+        </Card>
+      </div>
 
       <Card title="Linha do tempo">
         {order.timeline.length === 0 ? (
@@ -52,8 +91,16 @@ export default async function AdminOrderDetailPage({
           <ul className="timeline">
             {order.timeline.map((event, index) => (
               <li key={index}>
-                <p className="timeline-event">{event.event}</p>
+                <p className="timeline-event">{eventLabel(event.event)}</p>
                 <p className="timeline-time">{formatDateTime(event.at)}</p>
+                {event.details && typeof event.details.reason === "string" ? (
+                  <p className="small muted">
+                    {typeof event.details.admin === "string" ? `${event.details.admin}: ` : ""}
+                    {event.event === "order.cancelled"
+                      ? cancellationReasonLabel(event.details.reason)
+                      : event.details.reason}
+                  </p>
+                ) : null}
               </li>
             ))}
           </ul>
