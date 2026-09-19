@@ -725,3 +725,16 @@ export interface ReverseGeocodingResponse {
   /** Sigla da UF. */
   state: string | null;
 }
+
+export type BehaviorLimitRule = "courier_withdrawals" | "merchant_cancellations";
+
+/** Limite de comportamento: `max` ocorrências em `windowMinutes` bloqueiam por `blockMinutes`. */
+export interface BehaviorLimit {
+  rule: BehaviorLimitRule;
+  max: number;
+  windowMinutes: number;
+  blockMinutes: number;
+  active: boolean;
+  updatedAt: string;
+  updatedBy?: { id: string; name: string } | null;
+}

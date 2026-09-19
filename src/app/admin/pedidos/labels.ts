@@ -1,4 +1,10 @@
-import type { AdminOrderAction, OrderStatus, TimeoutAction, TimeoutRule } from "@/lib/api/types";
+import type {
+  AdminOrderAction,
+  BehaviorLimitRule,
+  OrderStatus,
+  TimeoutAction,
+  TimeoutRule,
+} from "@/lib/api/types";
 
 /**
  * Vocabulário do painel de entregas. Os códigos (`return_to_showcase`, `timeout.not_picked_up`)
@@ -114,3 +120,16 @@ const EVENT_LABELS: Record<string, string> = {
 export function eventLabel(event: string): string {
   return EVENT_LABELS[event] ?? event;
 }
+
+export const LIMIT_RULES: Record<BehaviorLimitRule, { label: string; description: string }> = {
+  courier_withdrawals: {
+    label: "Desistências do entregador",
+    description:
+      "Desistências que contam penalidade. Ao atingir o máximo na janela, o entregador fica sem aceitar pedidos pelo tempo de bloqueio.",
+  },
+  merchant_cancellations: {
+    label: "Cancelamentos da loja",
+    description:
+      "Cancelamentos feitos pelo próprio estabelecimento (os da administração e de timeout não contam). Ao atingir o máximo, a loja fica sem publicar pedidos.",
+  },
+};

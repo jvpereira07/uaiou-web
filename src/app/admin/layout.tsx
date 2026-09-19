@@ -24,7 +24,7 @@ const NAV: readonly NavGroup[] = [
     label: "Entregas",
     items: [
       { href: "/admin/pedidos", label: "Entregas", icon: "Box" },
-      { href: "/admin/timeouts", label: "Timeouts", icon: "Alert" },
+      { href: "/admin/timeouts", label: "Timeouts e limites", icon: "Alert" },
     ],
   },
   {

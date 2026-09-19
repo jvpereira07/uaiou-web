@@ -3,6 +3,8 @@ import "server-only";
 import { api } from "./server";
 import type {
   AdminOrderAction,
+  BehaviorLimit,
+  BehaviorLimitRule,
   AdminOrderDetail,
   AdminOrdersOverview,
   AdminOrderSummary,
@@ -189,6 +191,11 @@ export const admin = {
   updateTimeout: (rule: TimeoutRule, body: { minutes: number; active: boolean }) =>
     api.put<TimeoutSetting>(`/admin/timeouts/${rule}`, body),
   runTimeouts: () => api.post<{ affected: Partial<Record<TimeoutRule, number>> }>("/admin/timeouts/run", undefined),
+  limits: () => api.get<BehaviorLimit[]>("/admin/limits"),
+  updateLimit: (
+    rule: BehaviorLimitRule,
+    body: { max: number; windowMinutes: number; blockMinutes: number; active: boolean },
+  ) => api.put<BehaviorLimit>(`/admin/limits/${rule}`, body),
   timeoutOccurrences: (params: { page?: number; perPage?: number } = {}) =>
     api.get<PageResponse<TimeoutOccurrence>>(`/admin/timeouts/occurrences${query(params)}`),
   auditLogs: (params: {

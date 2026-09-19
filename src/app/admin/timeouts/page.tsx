@@ -3,8 +3,8 @@ import { Alert, Card, EmptyState, PageHeader, Pagination, Badge } from "@/compon
 import { orderStatusLabel } from "@/components/order-status-badge";
 import { admin } from "@/lib/api/endpoints";
 import { formatDateTime } from "@/lib/format";
-import { TIMEOUT_ACTIONS, TIMEOUT_RULES } from "../pedidos/labels";
-import { RunTimeoutsForm, TimeoutSettingForm } from "./timeout-forms";
+import { LIMIT_RULES, TIMEOUT_ACTIONS, TIMEOUT_RULES } from "../pedidos/labels";
+import { BehaviorLimitForm, RunTimeoutsForm, TimeoutSettingForm } from "./timeout-forms";
 
 export const metadata = { title: "Timeouts" };
 
@@ -21,16 +21,17 @@ export default async function TimeoutsPage({
   const page = Number(params.page ?? "1") || 1;
   const perPage = Number(params.perPage ?? "20") || 20;
 
-  const [settings, occurrences] = await Promise.all([
+  const [settings, limits, occurrences] = await Promise.all([
     admin.timeouts(),
+    admin.limits(),
     admin.timeoutOccurrences({ page, perPage }),
   ]);
 
   return (
     <div>
       <PageHeader
-        title="Timeouts"
-        description="Prazos automáticos para pedidos parados em cada etapa da entrega."
+        title="Timeouts e limites"
+        description="Prazos automáticos para pedidos parados e limites de comportamento (ex.: 3 desistências em 24 h bloqueiam por 2 h)."
         breadcrumbs={["UaiOu", "Administração", "Entregas", "Timeouts"]}
         action={<RunTimeoutsForm />}
       />
@@ -58,6 +59,28 @@ export default async function TimeoutsPage({
             <p className="small muted">
               Atualizada em {formatDateTime(setting.updatedAt)}
               {setting.updatedBy ? ` por ${setting.updatedBy.name}` : ""}
+            </p>
+          </Card>
+        ))}
+      </div>
+
+      <h2>Limites de comportamento</h2>
+      <div className="grid-2">
+        {limits.map((limit) => (
+          <Card
+            key={limit.rule}
+            title={LIMIT_RULES[limit.rule]?.label ?? limit.rule}
+            action={
+              <Badge tone={limit.active ? "success" : "neutral"}>
+                {limit.active ? "Ligado" : "Desligado"}
+              </Badge>
+            }
+          >
+            <p className="small">{LIMIT_RULES[limit.rule]?.description}</p>
+            <BehaviorLimitForm limit={limit} />
+            <p className="small muted">
+              Atualizado em {formatDateTime(limit.updatedAt)}
+              {limit.updatedBy ? ` por ${limit.updatedBy.name}` : ""}
             </p>
           </Card>
         ))}
